@@ -5,10 +5,12 @@ defmodule Neo4j.Sips do
   Neo4j server via REST. All functions take a pool to run the query on.
 
   """
+  use Neo4j.Sips.Cypher
 
   alias Neo4j.Sips.Transaction
   alias Neo4j.Sips.Connection
   alias Neo4j.Sips.Query
+
 
   @config Application.get_env(:neo4j_sips, Neo4j)
   @pool_name :neo4j_sips_pool

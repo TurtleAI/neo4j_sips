@@ -1,5 +1,10 @@
-Logger.configure(level: :info)
+ExUnit.configure(trace: true) # todo remove me
 ExUnit.start()
+
+Code.require_file "../support/mock.exs",  __ENV__.file
+Code.require_file "../support/person.exs", __ENV__.file
+
+Logger.configure(level: :error)
 
 defmodule Neo4j.Sips.TestHelper do
 
@@ -26,9 +31,11 @@ defmodule Neo4j.Sips.TestHelper do
   defp file_error_description(reason), do: "due to #{reason}."
 end
 
-# todo: To clean up the test db, before running the tests
-# MATCH (n)
-# OPTIONAL MATCH (n)-[r]-()
-# DELETE n,r
+# clean up our own test models, before running the tests
+
+# delete_neo4j_sips_test_models = """
+#   MATCH (n {neo4j_sips:true}) OPTIONAL MATCH (n)-[r]-() DELETE n,r
+# """
+# Neo4j.Sips.tx_commit!(Neo4j.Sips.conn, delete_neo4j_sips_test_models)
 
 Process.flag(:trap_exit, true)

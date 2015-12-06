@@ -35,14 +35,33 @@ defmodule Neo4j.Sips.Utils do
     Enum.map(c, &(Map.get(&1, name))) |> List.first
   end
 
+  # some of the methods here are a customized variant from a similar project:
+  # - https://github.com/raw1z/ex_neo4j
+
+  def format_statements(queries) when is_list(queries) do
+    do_format_statements(queries, [])
+  end
+
+  def do_format_statements([], acc), do: to_json(%{statements: Enum.reverse(acc)})
+
+  def do_format_statements([{query, params}|tail], acc) do
+    statement = format_statement(query, params)
+    do_format_statements(tail, [statement|acc])
+  end
+
+  def format_statement(query, params) do
+    statement = %{ statement: query }
+    if Map.size(params) > 0 do
+      statement = Map.merge(statement, %{parameters: params})
+    end
+    statement
+  end
+
   # private stuff
 
   defp make_neo4j_statements([], acc, _options) do
     to_json(%{statements: Enum.reverse(acc)})
   end
-
-  # some of the methods here are a customized variant from a similar project:
-  # - https://github.com/raw1z/ex_neo4j
 
   defp make_neo4j_statements([query|tail], acc, options) when is_binary(query) do
     statement = neo4j_statement(query, %{}, options)

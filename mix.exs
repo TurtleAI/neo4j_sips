@@ -20,7 +20,7 @@ defmodule Neo4jSips.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :httpoison, :poison, :con_cache],
+    [applications: [:logger, :httpoison, :poison, :inflex, :con_cache],
      mod: {Neo4j.Sips, []}]
   end
 
@@ -29,6 +29,11 @@ defmodule Neo4jSips.Mixfile do
      {:poison, "~> 1.5.0"},
      {:con_cache, "~> 0.9.0"},
      {:poolboy, "~> 1.5.1"},
+     {:timex, "~> 1.0.0-rc1"},
+     {:inflex, "~> 1.5.0"},
+     {:chronos, "~> 1.5"},
+     {:meck, "~> 0.8.3", only: :test},
+     {:mix_test_watch, "~> 0.2", only: :dev},
      {:ex_doc, "~> 0.10.0", only: :docs},
      {:earmark, "~> 0.1.18", only: :docs},
      {:inch_ex, "~> 0.4.0", only: :docs}]
