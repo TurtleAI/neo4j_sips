@@ -24,7 +24,7 @@ defmodule Model.ValidationsTests do
 
       cypher_returns { :ok, expected_response }, for_query: cypher
 
-      {:nok, nil, p} = Person.create(name: "John Doe", email: "john.doe@example.com", age: 30) |> IO.inspect
+      {:nok, nil, p} = Person.create(name: "John Doe", email: "john.doe@example.com", age: 30)
 
       assert Enum.find(p.errors[:email], &(&1 == "model.validation.unique")) != nil
       # IO.puts("deleting person: #{inspect(person)}")
