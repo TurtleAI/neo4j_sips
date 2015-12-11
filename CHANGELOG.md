@@ -1,5 +1,12 @@
 ### Change Log
 
+### 0.1.21 (2015-12-05)
+
+Finally made peace with the [meck](https://github.com/eproxus/meck) framework and decided to keep it around, at least for the legacy tests. Meck is ok, as long as you pay attention to the race conditions. 
+
+This neo4_sips version is stable and can be used for simple yet serious tasks :) Model documentation and some works on the model relationships are still work in progress.
+
+
 ### 0.1.20 (2015-12-06)
 
 Introducing the [Model](https://github.com/florinpatrascu/neo4j_sips/tree/model_intro), one of the few steps remaining before integrating the `neo4j_sips` into a new `Ecto` driver for Neo4j.
