@@ -1,6 +1,6 @@
 # mix test test/neo4j_sips_query_test.exs
 defmodule Neo4j.Sips.Query.Test do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Neo4j.Sips.Utils
   alias Neo4j.Sips, as: Neo4j
@@ -88,7 +88,6 @@ defmodule Neo4j.Sips.Query.Test do
     assert my_roles -- roles == [], "found more roles in the db than expected"
   end
 
-
   test "results in graph format" do
     conn   = Neo4j.conn( %{resultDataContents: [ "row", "graph" ]})
     cypher = """
@@ -119,5 +118,4 @@ defmodule Neo4j.Sips.Query.Test do
     key_set = Enum.into(my_keys, HashSet.new)
     assert length(Enum.filter(db_keys, &(HashSet.member?(key_set, &1)))) > 0
   end
-
 end

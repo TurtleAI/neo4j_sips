@@ -5,12 +5,12 @@ defmodule Mock do
   def init_mocks do
     mock_module Chronos
     :meck.expect(Chronos, :now, fn -> {{2015, 11, 2}, {17, 17, 17}} end)
-    mock_module Neo4j.Sips.Cypher, [:unstick, :passthrough]
+    mock_module Neo4j.Sips, [:unstick, :passthrough]
     mock_module Neo4j.Sips.Http, [:unstick, :passthrough]
   end
 
   def unload_mocks do
-    :meck.unload(Neo4j.Sips.Cypher)
+    :meck.unload(Neo4j.Sips)
     :meck.unload(Neo4j.Sips.Http)
     :meck.unload(Chronos)
   end
@@ -39,19 +39,29 @@ defmodule Mock do
 
   defmacro cypher_returns(response, for_query: query) do
     quote bind_quoted: [query: query, response: response] do
-      :meck.expect(Neo4j.Sips, :run, fn(query) -> response end)
+      conn = Neo4j.Sips.conn
+      :meck.expect(Neo4j.Sips, :query, fn(conn, query) -> response end)
     end
   end
 
   defmacro cypher_returns(response, for_query: query, with_params: params) do
     quote bind_quoted: [query: query, response: response, params: params] do
-      :meck.expect(Neo4j.Sips, :run, fn(query, params) -> response end)
+      conn = Neo4j.Sips.conn
+      :meck.expect(Neo4j.Sips, :query, fn(conn, query, params) -> response end)
     end
   end
 
   defmacro http_client_returns(response, for_query: query, with_params: params) do
     quote bind_quoted: [query: query, params: params, response: response] do
       request_body = Neo4j.Sips.Utils.format_statements([{query, params}])
+      :meck.expect(Neo4j.Sips.Http, :post!, fn(tx_commit_url, body=request_body) -> %{ body: response }
+      end)
+    end
+  end
+
+  defmacro http_client_returns(response, for_queries: queries, with_params: params) do
+    quote bind_quoted: [queries: queries, params: params, response: response] do
+      request_body = Neo4j.Sips.Utils.format_statements(Enum.zip(queries, params))
       :meck.expect(Neo4j.Sips.Http, :post!, fn(tx_commit_url, body=request_body) -> %{ body: response }
       end)
     end

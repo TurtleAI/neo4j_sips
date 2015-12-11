@@ -5,7 +5,6 @@ defmodule Model.SaveMethodCallbacksTest do
   require Logger
 
   setup_all do
-    Neo4j.Sips.query!(Neo4j.Sips.conn, "MATCH (n {neo4j_sips: TRUE}) OPTIONAL MATCH (n)-[r]-() DELETE n,r")
     Agent.start_link(fn -> [] end, name: :buffer)
     :ok
   end
@@ -88,7 +87,7 @@ defmodule Model.SaveMethodCallbacksTest do
     end
   end
 
-  test "calls the callbacks in the right order for udpated models" do
+  test "calls the callbacks in the right order for updated models" do
     enable_mock do
       query = """
       START n=node(81776)
@@ -177,35 +176,13 @@ defmodule Model.SaveMethodCallbacksTest do
         }
       ]
 
-      cypher_returns { :ok, expected_response },
-        for_query: query
+      cypher_returns { :ok, expected_response }, for_query: query
 
       {:ok, _testers} = CallbackTester.find()
       assert Agent.get(:buffer, &(&1)) == [:after_find, :after_find]
     end
   end
 
-  test "calls the after_find callbacks for find by id" do
-    enable_mock do
-      query = """
-      START n=node(81776)
-      RETURN id(n), n
-      """
-
-      expected_response = [
-        %{
-          "id(n)" => 81776,
-              "n" => %{}
-        }
-      ]
-
-      cypher_returns { :ok, expected_response },
-        for_query: query
-
-      {:ok, _tester} = CallbackTester.find(81776)
-      assert Agent.get(:buffer, &(&1)) == [:after_find]
-    end
-  end
 
   test "do not call the after_find callbacks for failed find requests" do
     enable_mock do
