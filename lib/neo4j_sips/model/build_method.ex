@@ -18,18 +18,18 @@ defmodule Neo4j.Sips.Model.BuildMethod do
     fields
     |> Enum.filter(fn field -> field.required == true end)
     |> Enum.map(fn field -> {Atom.to_string(field.name), Macro.var(field.name, __MODULE__)} end)
-    |> Enum.map fn field ->
-      function_args = {:%{}, [], [field]}
-      quote do
-        def build(unquote(function_args)=attributes) do
-          attributes = attributes
-          |> Enum.map(fn {k,v} -> {String.to_atom(k), v} end)
-          |> Enum.into(Map.new)
+    |> Enum.map(fn field ->
+          function_args = {:%{}, [], [field]}
+          quote do
+            def build(unquote(function_args)=attributes) do
+              attributes = attributes
+              |> Enum.map(fn {k,v} -> {String.to_atom(k), v} end)
+              |> Enum.into(Map.new)
 
-          Neo4j.Sips.Model.ModelBuilder.build(__MODULE__, attributes)
-        end
-      end
-    end
+              Neo4j.Sips.Model.ModelBuilder.build(__MODULE__, attributes)
+            end
+          end
+        end)
   end
 
   defp generate_for_required_field(fields) do

@@ -58,10 +58,10 @@ defmodule Neo4j.Sips.Model.SaveMethod do
   defp generate_callback_calls(metadata, kind) do
     metadata.callbacks
     |> Enum.filter(fn {k, _v} -> k == kind end)
-    |> Enum.map fn {_k, callback} ->
-      quote do
-        model = unquote(callback)(model)
-      end
-    end
+    |> Enum.map( fn {_k, callback} ->
+          quote do
+            model = unquote(callback)(model)
+          end
+        end)
   end
 end

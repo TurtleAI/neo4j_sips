@@ -2,7 +2,7 @@ defmodule Model.FieldsTest do
   use ExUnit.Case
 
   test "defines fields" do
-    field_names = Person.metadata.fields |> Enum.map fn field -> field.name end
+    field_names = Person.metadata.fields |> Enum.map(fn field -> field.name end)
     assert field_names == [
       :age,
       :created_at,

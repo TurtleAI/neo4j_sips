@@ -2,10 +2,10 @@ defmodule Neo4j.Sips.Model.NodeParser do
   def parse(module, data_rows) when is_list(data_rows) do
     data_rows
     |> Enum.group_by(&(&1["id(n)"]))
-    |> Enum.map fn {_, data} ->
-      Enum.reduce(data, nil, fn (row, acc) -> parse_row(acc, module, row) end)
-      |> module.build
-    end
+    |> Enum.map( fn {_, data} ->
+          Enum.reduce(data, nil, fn (row, acc) -> parse_row(acc, module, row) end)
+          |> module.build
+        end)
   end
 
   def parse(module, data) when is_map(data) do

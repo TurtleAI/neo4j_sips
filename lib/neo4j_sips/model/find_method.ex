@@ -75,10 +75,10 @@ defmodule Neo4j.Sips.Model.FindMethod do
   defp generate_after_find_callbacks(metadata) do
     metadata.callbacks
     |> Enum.filter(fn {k,_v} -> k == :after_find end)
-    |> Enum.map fn ({_k, callback}) ->
-      quote do
-        model = unquote(callback)(model)
-      end
-    end
+    |> Enum.map( fn ({_k, callback}) ->
+          quote do
+            model = unquote(callback)(model)
+          end
+        end)
   end
 end
