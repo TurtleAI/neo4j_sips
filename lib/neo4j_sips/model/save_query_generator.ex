@@ -37,7 +37,7 @@ defmodule Neo4j.Sips.Model.SaveQueryGenerator do
       |> Enum.map(&(&1.name))
       |> Enum.map(&({&1, Map.get(model, &1)}))
       |> Enum.filter(fn {k,v} -> k != :id && v != nil end)
-      |> Enum.into Map.new
+      |> Enum.into(Map.new)
   end
 
   defp current_datetime do
@@ -46,13 +46,13 @@ defmodule Neo4j.Sips.Model.SaveQueryGenerator do
 
   def get_field_value(model, field) do
     value = Map.get(model, field.name) || []
-    [value] |> List.flatten |> Enum.map fn x ->
+    [value] |> List.flatten |> Enum.map(fn x ->
       cond do
         # TODO: review the is_binary condition when the support for types will have been implemented
         is_integer(x) || is_binary(x) -> x
         is_map(x) -> Map.get(x, :id)
       end
-    end
+    end)
   end
 
   defp model_relationships(model, module) do
