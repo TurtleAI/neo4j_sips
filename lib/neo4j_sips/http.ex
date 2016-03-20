@@ -20,21 +20,24 @@ defmodule Neo4j.Sips.Http do
   end
 
   defp headers do
-    @base_headers ++ ["Authorization": "Basic #{token_auth}"]
+    @base_headers ++ auth_headers
   end
 
-  defp token_auth do
+  defp auth_headers do
     basic_auth = Neo4j.Sips.config[:basic_auth]
     token_auth = Neo4j.Sips.config[:token_auth]
 
     cond do
       token_auth != nil ->
-        token_auth
+        ["Authorization": "Basic #{token_auth}"]
 
       basic_auth != nil ->
         username = basic_auth[:username]
         password = basic_auth[:password]
-        Base.encode64("#{username}:#{password}")
+        token = Base.encode64("#{username}:#{password}")
+        ["Authorization": "Basic #{token}"]
+
+      true -> []
     end
   end
 
