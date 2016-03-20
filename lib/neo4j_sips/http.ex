@@ -8,6 +8,8 @@ defmodule Neo4j.Sips.Http do
 
   token_auth = nil
 
+  IO.inspect Neo4j.Sips.config
+
   if basic_auth = Neo4j.Sips.config[:basic_auth] do
     username = basic_auth[:username]
     password = basic_auth[:password]
@@ -28,6 +30,8 @@ defmodule Neo4j.Sips.Http do
     "X-Stream": "true",
     "Authorization": "Basic #{token_auth}"
   ]
+
+  IO.inspect @headers
 
   @doc false
   @spec process_request_headers(map) :: map
